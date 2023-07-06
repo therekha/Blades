@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 require("dotenv").config();
-const token = process.env.API_KEY;
+
+var fs = require("fs");
+const token = fs.readFileSync("api_key").toString('utf-8');
 const obj = require("./embed.js");
 
 bot.on("ready", () => {
