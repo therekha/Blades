@@ -128,7 +128,11 @@ bot.on("message", (msg) => {
 		let content = msg.content.slice(1).toLowerCase().replace(/\s+/g, "");
 
 		if (obj[content]) {
-			msg.reply(obj[content]);
+			msg.reply(
+				new Discord.MessageEmbed()
+					.setColor('#412132')
+					.setDescription(obj[content])
+				);
 		}
 
 	else if (!isNaN(content[0])) {

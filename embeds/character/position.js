@@ -35,6 +35,8 @@ module.exports.desperate = `
 ` 
 
 module.exports.consequence = module.exports.consequences = `
+# Consequences
+
 **Reduced Effect:** -1 effect level.
 **Reduced Position:** -1 position (try again if fail)
 **Lost Opportunity:** Try again with a new action rating. 
@@ -48,3 +50,5 @@ module.exports.consequence = module.exports.consequences = `
     Moderate: Level 2
     Severe: Level 3
 `
+
+module.exports.position = module.exports.controlled + module.exports.risky + module.exports.desperate + module.exports.consequence;
