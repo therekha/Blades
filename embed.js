@@ -27,7 +27,10 @@ for (let prop in importObj) {
 	module.exports[prop] = importObj[prop];
 }
 
-
+module.exports.kankahelp = `
+# KANKA HELP
+\` k$ query \` Will perform a search of the kanka for the campaign and return links to entitites found.
+`
 
 module.exports.glossaryhelp = 
 `
@@ -78,7 +81,8 @@ module.exports.dicehelp =
 module.exports.help = 
 	`\` $help \` shows this again
 	\` $glossaryhelp \` shows possible glossary entries
-	\` $dicehelp \` shows how to roll dice`
-	+ module.exports.dicehelp + module.exports.glossaryhelp
+	\` $dicehelp \` shows how to roll dice
+	\` $kankahelp \` shows how to search kanka`
+	+ module.exports.kankahelp + module.exports.dicehelp + module.exports.glossaryhelp
 	+ `
 	Original bot code credit: [Blades in the Glossary](https://github.com/jordanclarkedev/Blades-in-the-Glossary/blob/master/README.md), [Blades in the Dicebot](https://github.com/jordanclarkedev/bitdicebot/blob/master/README.md)`
