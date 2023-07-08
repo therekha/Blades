@@ -4,6 +4,7 @@ const importObj = {
 	...require("./embeds/character/charitems.js"),
 	...require("./embeds/character/items.js"),
 	...require("./embeds/character/vice_trauma.js"),
+	...require("./embeds/character/position.js"),
 
 	...require("./embeds/charCrewCreation/char.js"),
 	...require("./embeds/charCrewCreation/crew.js"),
@@ -180,88 +181,6 @@ module.exports.group = new Discord.MessageEmbed()
 		value: `If the group action results in consequences, the entire group may suffer the consequences; an easy way to TPK, if you're not cautious.`,
 	});
 
-module.exports.controlled = new Discord.MessageEmbed()
-	.setColor("#0099ff")
-	.setTitle("Controlled Consequences")
-	.setDescription(
-		`Don't worry, you can always resist consequences to lower the severity of them!`
-	)
-	.addFields(
-		{
-			name: `Stop!`,
-			value: `Reduced Effect:
-		Worse Position:
-		Lost Opportunity:
-		Complication:
-		Harm:`,
-			inline: true,
-		},
-		{
-			name: `You violated the law!`,
-			value: `-1 effect level
-			-1 position (can try again if failure)
-			Try again with a new action rating.
-			Immediate problem, 1 tick or +1 Heat.
-			Lesser Harm (level 1)`,
-			inline: true,
-		}
-	);
-
-module.exports.risky = new Discord.MessageEmbed()
-	.setColor("#0099ff")
-	.setTitle("Risky Consequences")
-	.setDescription(
-		`Don't worry, you can always resist consequences to lower the severity of them!`
-	)
-	.addFields(
-		{
-			name: `Stop right there,`,
-			value: `Reduced Effect:
-		Worse Position:
-		Lost Opportunity:
-		Complication:
-		Harm:`,
-			inline: true,
-		},
-		{
-			name: `criminal scum!`,
-			value: `-1 effect level
-		-1 position (try again if fail)
-		Try again with a new action
-		Immediate problem, 2 ticks or +1 Heat
-		Moderate Harm (level 2)
-		`,
-			inline: true,
-		}
-	);
-
-module.exports.desperate = new Discord.MessageEmbed()
-	.setColor("#0099ff")
-	.setTitle("Desperate Consequences")
-	.setDescription(
-		`Don't worry, you can always resist consequences to lower the severity of them! Also, you get XP for Desperate actions!`
-	)
-	.addFields(
-		{
-			name: `Then pay`,
-			value: `Reduced Effect:
-		Worse Position:
-		Lost Opportunity:
-		Complication:
-		Harm:`,
-			inline: true,
-		},
-		{
-			name: `with your blood!`,
-			value: `-1 effect level
-		-1 position (try again if fail)
-		Try again with a new action
-		Severe problem, 3 ticks or +2 Heat
-		Severe Harm (level 3)
-		`,
-			inline: true,
-		}
-	);
 
 module.exports.bargain = new Discord.MessageEmbed()
 	.setColor("#0099ff")
