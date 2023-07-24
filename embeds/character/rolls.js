@@ -17,14 +17,6 @@ module.exports.group =
 module.exports.bargain = module.exports.devilsbargain =
 	`# Devil's Bargain
 
-	run \` $db \` to draw a card
-
 	Can be proposed by GM or other player. +1d for accepting.
-	Some suggested bargains
-	- Collateral damage, unintended harm.
-	- Sacrifice COIN or an item.
-	- Betray a friend or loved one.
-	- Offend or anger a faction.
-	- Start and/or tick a troublesome clock.
-	- Add HEAT to the crew from evidence or witnesses.
-	- Suffer harm.`;
+	
+	Run \` $db \` to draw a card`;
