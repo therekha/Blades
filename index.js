@@ -88,7 +88,8 @@ const roll = {
 			data.resist = true;
 		}
 
-		return this.roller(data);
+		finalData = this.roller(data);
+		return this.commenter(finalData);
 	},
 
 	//Generates random numbers
@@ -118,7 +119,7 @@ const roll = {
 			data.rolls[0] = `**${data.result}**`;
 		}
 
-		return this.commenter(data);
+		return data;
 	},
 
 	//Default roll handler
@@ -136,7 +137,7 @@ const roll = {
 		});
 		data.rolls[data.index] = `**${data.result}**`; //Bolds the first occurence of highest roll.
 
-		return this.commenter(data);
+		return data;
 	},
 
 	//Formatting reply string.
@@ -158,7 +159,11 @@ const roll = {
 			} else {
 				return `**Take ${6 - data.result} stress!**\n${replyString}`;
 			}
-		} else {
+		} 
+		else if (data.entangling) {
+			return replyString;
+		}
+		else {
 			//Action rolls
 			switch (true) {
 				case data.crit:
@@ -172,12 +177,62 @@ const roll = {
 			}
 		}
 	},
+
+	entanglement(heat, wantedLevel) {
+		// set "level" to determine the heat table column
+		let heatLevel = 1;
+		if(heat < 4){
+			heatLevel = 0;
+		}
+		else if( heat > 5 ){
+			heatLevel = 2
+		}
+
+		let entanglementData = {
+			dice: wantedLevel,
+			resist: false,
+			entangling: true
+		}
+
+		let wantedResult = this.roller(entanglementData);
+
+		let options = obj['entanglementTable'][heatLevel][wantedResult.result - 1];
+
+		let message = 'Choose 1: \n\n'
+		options.forEach((value, index) => {
+			message += `**${value}**\n${obj['entanglementDescriptions'][value]}\n\n`
+		})
+
+		return message + '\n'
+		 + this.commenter(wantedResult);
+	}
 };
 
 bot.on("message", (msg) => {
-	if (msg.content[0] === "$") {
+	commandArray = msg.content.split(' ');
+	command = commandArray[0].toLowerCase();
+
+	if(commandArray[0] === "$entangle"){
+		if(commandArray.length !== 3 || isNaN(commandArray[1]) || isNaN(commandArray[2])){
+			msg.reply(embedReply('Format for entanglement roll is \` $entangle <heat> <wanted level> \`'))
+		}
+		else{
+			let heat = commandArray[1];
+			let wantedLevel = commandArray[2];
+	
+			if(wantedLevel > 4){
+				msg.reply(embedReply(`Invalid wanted level!
+				Format for entanglement roll is \` $entangle <heat> <wanted level> \``))
+			}
+			else{
+				msg.reply(
+					embedReply(roll.entanglement(heat, wantedLevel))
+				)
+			}
+		}
+	}
+	else if (msg.content[0] === "$") {
 		let content = msg.content.slice(1).toLowerCase().replace(/\s+/g, "");
-		
 
 		if (obj[content]) {
 			msg.reply(

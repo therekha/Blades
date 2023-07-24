@@ -1,3 +1,27 @@
+module.exports.entanglements = `**Entanglements**
+
+Run \` $entangle <heat> <wanted level> \` to roll on the expanded entanglement table.
+
+Roll 1d per Wanted level
+
+**Heat 0-3**
+Result 1-3 \` $gang trouble \` or \` $usual suspects \`
+Result 4-5 \` $rivals \` or \` $unquiet dead \`
+Result 6: \` $cooperation \`
+
+**Heat 4-5**
+Result 1-3 \` $gang trouble \` or \` $questioning \`
+Result 4-5 \` $reprisals \` or \` $unquiet dead \`
+Result 6 \` $show of force \`
+
+**Heat 6+**
+Result 1-3 \` $flipped \` or \` $interrogation \`
+Result 4-5 \` $demonic notice \` or \` $show of force \`
+Result 6 \` $arrest \``;
+
+module.exports.entangle = module.exports.entanglement = module.exports.entangelment = module.exports.entangelments =
+	module.exports.entanglements;
+
 module.exports.arrest = `**Arrest**
 An Inspector presents a case file of evidence to a magistrate, to begin prosecution of your crew. The Bluecoats send a detail to arrest you (a gang at least equal in scale to your wanted level). Pay them off with coin equal to your wanted level +3, hand someone over for arrest (this clears your heat), or try to evade capture.`;
 
