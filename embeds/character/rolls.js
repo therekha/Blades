@@ -14,8 +14,10 @@ module.exports.group =
 		If the group action results in consequences, the entire group may suffer the consequences; an easy way to TPK, if you're not cautious.`;
 
 
-module.exports.bargain = 
+module.exports.bargain = module.exports.devilsbargain =
 	`# Devil's Bargain
+
+	run \` $db \` to draw a card
 
 	Can be proposed by GM or other player. +1d for accepting.
 	Some suggested bargains

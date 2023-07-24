@@ -20,6 +20,15 @@ const embedReply = (message) =>{
 	.setDescription(message);
 }
 
+const pullBargain = () => {
+	result = Math.floor(Math.random() * 50 + 1);
+	imageLink = 'https://github.com/therekha/Blades/blob/devils-bargain/embeds/DB/DevilsBargain-'
+	 + result.toString() + '.png?raw=true'
+	return embedReply('You pull a devil\'s bargain!')
+		.setImage(imageLink);
+
+}
+
 const searchKanka = async (query, msg) => {
 	try{
 		const response = await fetch('https://kanka.io/api/1.0/campaigns/' + 
@@ -175,19 +184,26 @@ bot.on("message", (msg) => {
 					embedReply(obj[content])
 				);
 		}
+		else if (!isNaN(content[0])) {
+			let reply = roll.parse(content);
 
-	else if (!isNaN(content[0])) {
-				let reply = roll.parse(content);
-	
-				msg.reply(embedReply(reply)).catch((error) => {
-					console.log(error);
-					msg.reply(
-						"The bot had an error, which has been logged.\n*" +
-							error.message +
-							"*"
-					);
-				});
-			}
+			msg.reply(embedReply(reply)).catch((error) => {
+				console.log(error);
+				msg.reply(
+					"The bot had an error, which has been logged.\n*" +
+						error.message +
+						"*"
+				);
+			});
+		}
+		else if(content === 'db'){
+			msg.reply(pullBargain());
+		}
+		else{
+			msg.reply(
+				embedReply('Command not recognized!')
+			)
+		}
 	}
 	if(msg.content[0] + msg.content[1] === "k$"){
 		query = msg.content.slice(2).toLowerCase();
