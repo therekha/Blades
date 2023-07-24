@@ -61,6 +61,7 @@ Special playbook items can be found by the name of the playbook: \` $cutter \`, 
 \` $dice \` Ways to get more dice for your rolls.
 \` $group \` How to take a group action.
 \` $bargain \` Give a couple suggestions for Devil's Bargains.
+\` $db \` Pull a card for a specific Devil's Bargain suggestion.
 
 
 **References**
@@ -85,4 +86,5 @@ module.exports.help =
 	\` $kankahelp \` shows how to search kanka`
 	+ module.exports.kankahelp + module.exports.dicehelp + module.exports.glossaryhelp
 	+ `
-	Original bot code credit: [Blades in the Glossary](https://github.com/jordanclarkedev/Blades-in-the-Glossary/blob/master/README.md), [Blades in the Dicebot](https://github.com/jordanclarkedev/bitdicebot/blob/master/README.md)`
+	Original bot code credit: [Blades in the Glossary](https://github.com/jordanclarkedev/Blades-in-the-Glossary/blob/master/README.md), [Blades in the Dicebot](https://github.com/jordanclarkedev/bitdicebot/blob/master/README.md), [Dusk Companion](https://github.com/benjo121ben/Discord-Bot-DnD-BitD)
+	Other credits: [Devil's Bargain Cards](https://docs.google.com/document/d/1VF40zxIj2l1kNJ3kR1KhjesQc7Wr3crH/edit?usp=sharing&ouid=110046508991315423814&rtpof=true&sd=true)`
