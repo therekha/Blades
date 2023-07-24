@@ -22,9 +22,9 @@ const embedReply = (message) =>{
 
 const pullBargain = () => {
 	result = Math.floor(Math.random() * 50 + 1);
-	imageLink = 'attachment:://embeds/DB/DevilsBargain-' + result.toString() + '.png';
-	
-	return embedReply('Devil\'s bargain!')
+	imageLink = 'https://github.com/therekha/Blades/blob/devils-bargain/embeds/DB/DevilsBargain-'
+	 + result.toString() + '.png?raw=true'
+	return embedReply('You pull a devil\'s bargain!')
 		.setImage(imageLink);
 
 }
