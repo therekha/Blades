@@ -1,3 +1,4 @@
+var jimp = require("jimp");
 const Discord = require("discord.js");
 const bot = new Discord.Client();
 require("dotenv").config();
@@ -9,6 +10,8 @@ const obj = require("./embed.js");
 const kankaKeys = fs.readFileSync("kanka_key").toString('utf-8').split("\n");
 const kankaCampaignId = kankaKeys[0];
 const kankaToken = kankaKeys[1];
+
+const repoURL = 'https://github.com/therekha/Blades/blob/master';
 
 bot.on("ready", () => {
 	console.log("This bot is online");
@@ -22,7 +25,7 @@ const embedReply = (message) =>{
 
 const pullBargain = () => {
 	result = Math.floor(Math.random() * 50 + 1);
-	imageLink = 'https://github.com/therekha/Blades/blob/master/embeds/DB/DevilsBargain-'
+	imageLink = repoURL + '/embeds/DB/DevilsBargain-'
 	 + result.toString() + '.png?raw=true'
 	return embedReply('You pull a devil\'s bargain!')
 		.setImage(imageLink);
@@ -96,11 +99,13 @@ const roll = {
 	roller(data) {
 		//Rolling dice into data.rolls[]
 		data.rolls = [];
+		data.pics = []
 		data.index = 0;
 		data.result = 0;
 
 		for (i = 1; i <= data.dice; i++) {
 			data.rolls.push(Math.floor(Math.random() * 6 + 1));
+			data.pics.push('');
 		}
 		if (data.d === 0) {
 			return this.zeroHandle(data); //Roll 2d, take lowest
@@ -111,10 +116,18 @@ const roll = {
 
 	//Handling 0d rolls (roll 2, take lowest)
 	zeroHandle(data) {
+		const dicePicURL = 'embeds/dice_pics/'
+
 		if (data.rolls[0] > data.rolls[1]) {
+			data.pics[0] = dicePicURL + 'plain/'+ data.rolls[0].toString() + '.png';
+			data.pics[1] = dicePicURL + 'gold/'+ data.rolls[1].toString() + '.png';
+
 			data.result = data.rolls[1];
 			data.rolls[1] = `**${data.result}**`;
 		} else {
+			data.pics[1] = dicePicURL + 'plain/'+ data.rolls[1].toString() + '.png';
+			data.pics[0] = dicePicURL + 'gold/'+ data.rolls[0].toString() + '.png';
+
 			data.result = data.rolls[0];
 			data.rolls[0] = `**${data.result}**`;
 		}
@@ -124,6 +137,7 @@ const roll = {
 
 	//Default roll handler
 	manyHandle(data) {
+		const dicePicURL = 'embeds/dice_pics/'
 		data.rolls.forEach((value, index) => {
 			if (value > data.result) {
 				//Stores highest roll + the index of it.
@@ -133,9 +147,13 @@ const roll = {
 				//Bolds duplicate 6s if they exist (crit handling).
 				data.rolls[index] = "**6**";
 				data.crit = true;
+				data.pics[index] = dicePicURL + 'gold/'+ value.toString() + '.png'
 			}
+			if(value !== 6)
+				data.pics[index] = dicePicURL + 'plain/'+ value.toString() + '.png'
 		});
 		data.rolls[data.index] = `**${data.result}**`; //Bolds the first occurence of highest roll.
+		data.pics[data.index] = dicePicURL + 'gold/'+ data.result.toString() + '.png'
 
 		return data;
 	},
@@ -143,6 +161,7 @@ const roll = {
 	//Formatting reply string.
 	commenter(data) {
 		let replyString = `[**${data.result}**] `;
+		const dicePicURL = repoURLurl + '/embeds/dice_pics/'
 
 		if (data.d !== 1) {
 			replyString += `from ${data.rolls.join(", ")}`; //Doesn't bother with displaying roll array if 1d.
@@ -155,27 +174,35 @@ const roll = {
 		if (data.resist) {
 			//Resistance rolls
 			if (data.crit) {
-				return `**Critical!** Recover 1 stress\n${replyString}`;
+				replyString = `**Critical!** Recover 1 stress\n${replyString}`;
+				data.pics.push(dicePicURL + 'critical.png');
 			} else {
-				return `**Take ${6 - data.result} stress!**\n${replyString}`;
+				replyString = `**Take ${6 - data.result} stress!**\n${replyString}`;
+				data.pics.push(dicePicURL + 'success.png');
 			}
 		} 
 		else if (data.entangling) {
-			return replyString;
+			return {images: pics, text: replyString};
 		}
 		else {
 			//Action rolls
 			switch (true) {
 				case data.crit:
-					return `**Critical!**\n${replyString}`;
+					data.pics.push(dicePicURL + 'critical.png');
+					break;
 				case data.result === 6:
-					return `**Success!**\n${replyString}`;
+					data.pics.push(dicePicURL + 'success.png');
+					break;
 				case data.result >= 4:
-					return `**Partial!**\n${replyString}`;
+					data.pics.push(dicePicURL + 'partial.png');
+					break;
 				case data.result <= 3:
-					return `**Failure!**\n${replyString}`;
+					data.pics.push(dicePicURL + 'failure.png');
+					break;
 			}
 		}
+
+		return {images: data.pics, text: replyString};
 	},
 
 	entanglement(heat, wantedLevel) {
@@ -207,6 +234,57 @@ const roll = {
 		 + this.commenter(wantedResult);
 	}
 };
+
+const mergeDice = async(dicePics, msg, text) => {
+	const thumbnail = dicePics.pop();
+	
+	var jimps = [jimp.read('embeds/canvas.png')]
+	dicePics.forEach((image, i) => {
+		jimps.push(jimp.read(image))
+	});
+
+	await Promise.all(jimps).then(function(data) {
+		return Promise.all(jimps)
+	}).then(async function(data){
+		// --- THIS IS WHERE YOU MODIFY THE IMAGES --- \\
+		if(dicePics.length < 5){
+			width = dicePics.length * 100;
+			height = 106;
+		}
+		else{
+			width = 5 * 100;
+			height = Math.ceil(dicePics.length/5) * 106
+		}
+		data[0].resize(width, height)
+		data.forEach((pic, index) => {
+			if(index !== 0){
+			x = ((index-1)%5)*100
+			y = Math.floor((index-1)/5)*106
+			data[0].composite(data[index], x, y)
+			}
+		});
+		await data[0].write('embeds/dice_pics/composite.png');
+		const attachment = new Discord
+                      .MessageAttachment('./embeds/dice_pics/composite.png', 'dice.png');
+
+		msg.reply(
+			new Discord.MessageEmbed()
+				.setColor('#412132')
+				.setTitle('Result:')
+				.setThumbnail(thumbnail)
+				.setDescription(text)
+				.attachFiles(attachment)
+				.setImage('attachment://dice.png')
+		).catch((error) => {
+			console.log(error);
+			msg.reply(
+				"The bot had an error, which has been logged.\n*" +
+					error.message +
+					"*"
+			);
+		});
+	});
+}
 
 bot.on("message", (msg) => {
 	commandArray = msg.content.split(' ');
@@ -241,15 +319,19 @@ bot.on("message", (msg) => {
 		}
 		else if (!isNaN(content[0])) {
 			let reply = roll.parse(content);
-
-			msg.reply(embedReply(reply)).catch((error) => {
-				console.log(error);
-				msg.reply(
-					"The bot had an error, which has been logged.\n*" +
-						error.message +
-						"*"
-				);
-			});
+			if(reply.images){
+				mergeDice(reply.images, msg, reply.text);
+			}
+			else{
+				msg.reply(embedReply(reply.text)).catch((error) => {
+					console.log(error);
+					msg.reply(
+						"The bot had an error, which has been logged.\n*" +
+							error.message +
+							"*"
+					);
+				});
+			}
 		}
 		else if(content === 'db'){
 			msg.reply(pullBargain());
