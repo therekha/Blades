@@ -161,7 +161,7 @@ const roll = {
 	//Formatting reply string.
 	commenter(data) {
 		let replyString = `[**${data.result}**] `;
-		const dicePicURL = repoURLurl + '/embeds/dice_pics/'
+		const dicePicURL = repoURL + '/embeds/dice_pics/'
 
 		if (data.d !== 1) {
 			replyString += `from ${data.rolls.join(", ")}`; //Doesn't bother with displaying roll array if 1d.
@@ -263,6 +263,7 @@ const mergeDice = async(dicePics, msg, text) => {
 			data[0].composite(data[index], x, y)
 			}
 		});
+		data[0].resize(width/2, height/2)
 		await data[0].write('embeds/dice_pics/composite.png');
 		const attachment = new Discord
                       .MessageAttachment('./embeds/dice_pics/composite.png', 'dice.png');
@@ -270,8 +271,7 @@ const mergeDice = async(dicePics, msg, text) => {
 		msg.reply(
 			new Discord.MessageEmbed()
 				.setColor('#412132')
-				.setTitle('Result:')
-				.setThumbnail(thumbnail)
+				.setThumbnail(thumbnail + '?raw=true')
 				.setDescription(text)
 				.attachFiles(attachment)
 				.setImage('attachment://dice.png')
