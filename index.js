@@ -263,7 +263,7 @@ const mergeDice = async(dicePics, msg, text) => {
 			data[0].composite(data[index], x, y)
 			}
 		});
-		data[0].resize(width/2, height/2)
+		data[0].resize(width/2, height/2, jimp.RESIZE_NEAREST_NEIGHBOR)
 		await data[0].write('embeds/dice_pics/composite.png');
 		const attachment = new Discord
                       .MessageAttachment('./embeds/dice_pics/composite.png', 'dice.png');
