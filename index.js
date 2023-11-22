@@ -1,6 +1,6 @@
 var jimp = require("jimp");
 const Discord = require("discord.js");
-const bot = new Discord.Client();
+const bot = new Discord.Client({intents:3276799});
 require("dotenv").config();
 
 var fs = require("fs");
@@ -59,8 +59,8 @@ const searchKanka = async (query, msg) => {
 			});
 		}
 	}
-	catch{
-		msg.reply(embedReply('Error connecting to Kanka!'))
+	catch(err){
+		msg.reply(embedReply('Error connecting to Kanka!' + response))
 	}
   }
 
@@ -182,7 +182,8 @@ const roll = {
 			}
 		} 
 		else if (data.entangling) {
-			return {images: pics, text: replyString};
+			data.pics.push(dicePicURL + 'success.png');
+			return {images: data.pics, text: replyString};
 		}
 		else {
 			//Action rolls
@@ -229,9 +230,8 @@ const roll = {
 		options.forEach((value, index) => {
 			message += `**${value}**\n${obj['entanglementDescriptions'][value]}\n\n`
 		})
-
-		return message + '\n'
-		 + this.commenter(wantedResult);
+		let diceRes = this.commenter(wantedResult);
+		return {images: wantedResult.pics, text: message + '\n'+ diceRes.text};
 	}
 };
 
@@ -303,9 +303,20 @@ bot.on("message", (msg) => {
 				Format for entanglement roll is \` $entangle <heat> <wanted level> \``))
 			}
 			else{
-				msg.reply(
-					embedReply(roll.entanglement(heat, wantedLevel))
-				)
+				let reply = roll.entanglement(heat, wantedLevel);
+				if(reply.images){
+					mergeDice(reply.images, msg, reply.text);
+				}
+				else{
+					msg.reply(embedReply(reply.text)).catch((error) => {
+						console.log(error);
+						msg.reply(
+							"The bot had an error, which has been logged.\n*" +
+								error.message +
+								"*"
+						);
+					});
+				}
 			}
 		}
 	}
