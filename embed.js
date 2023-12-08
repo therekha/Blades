@@ -79,15 +79,17 @@ module.exports.dicehelp =
 \` $3r \` Resistance roll of 3 d6s.
 \` $2r /comment \` Add a comment. 
 \` $entangle <heat> <wanted level> \` Roll on the expanded entanglement table.
+\` $wanted <new wanted level> \` Response from the City Watch upon a new wanted level.
 `
 
 
 module.exports.help = 
 	`\` $help \` shows this again
 	\` $glossaryhelp \` shows possible glossary entries
-	\` $dicehelp \` shows how to roll dice
-	\` $kankahelp \` shows how to search kanka`
-	+ module.exports.kankahelp + module.exports.dicehelp + module.exports.glossaryhelp
+	\` $dicehelp \` shows how to roll dice`
+//	\` $kankahelp \` shows how to search kanka`
+//	+ module.exports.kankahelp 
+    + module.exports.dicehelp + module.exports.glossaryhelp
 	+ `
 	Original bot code credit: [Blades in the Glossary](https://github.com/jordanclarkedev/Blades-in-the-Glossary/blob/master/README.md), [Blades in the Dicebot](https://github.com/jordanclarkedev/bitdicebot/blob/master/README.md), [Dusk Companion](https://github.com/benjo121ben/Discord-Bot-DnD-BitD)
 	Other credits: [Devil's Bargain Cards](https://docs.google.com/document/d/1VF40zxIj2l1kNJ3kR1KhjesQc7Wr3crH/edit?usp=sharing&ouid=110046508991315423814&rtpof=true&sd=true), [Expanded Entanglements](https://drive.google.com/file/d/1cL9f2LXwr_CZ5C-Ce6c82higXtILaLRm/view)`
