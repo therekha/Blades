@@ -18,6 +18,7 @@ const importObj = {
 	...require("./embeds/procedures/engagement.js"),
 	...require("./embeds/procedures/entanglements.js"),
 	...require("./embeds/procedures/expandedEntanglements.js"),
+	...require("./embeds/procedures/wantedEscalations.js"),
 
 	...require("./embeds/references/districts.js"),
 	...require("./embeds/references/glossary.js"),
