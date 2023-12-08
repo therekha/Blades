@@ -3,6 +3,8 @@ const Discord = require("discord.js");
 const bot = new Discord.Client({intents:3276799});
 require("dotenv").config();
 
+const testing = true;
+
 var fs = require("fs");
 const token = fs.readFileSync("api_key").toString('utf-8');
 const obj = require("./embed.js");
@@ -33,8 +35,9 @@ const pullBargain = () => {
 }
 
 const searchKanka = async (query, msg) => {
+	const response = '';
 	try{
-		const response = await fetch('https://kanka.io/api/1.0/campaigns/' + 
+		response = await fetch('https://kanka.io/api/1.0/campaigns/' + 
 										kankaCampaignId + '/search/' + query,
 										{headers: {
 											"Authorization": "Bearer " + kankaToken,
@@ -208,12 +211,12 @@ const roll = {
 
 	entanglement(heat, wantedLevel) {
 		// set "level" to determine the heat table column
-		let heatLevel = 1;
+		let heatTier = 1;
 		if(heat < 4){
-			heatLevel = 0;
+			heatTier = 0;
 		}
 		else if( heat > 5 ){
-			heatLevel = 2
+			heatTier = 2
 		}
 
 		let entanglementData = {
@@ -224,7 +227,7 @@ const roll = {
 
 		let wantedResult = this.roller(entanglementData);
 
-		let options = obj['entanglementTable'][heatLevel][wantedResult.result - 1];
+		let options = obj['entanglementTable'][heatTier][wantedResult.result - 1];
 
 		let message = 'Choose 1: \n\n'
 		options.forEach((value, index) => {
@@ -232,6 +235,37 @@ const roll = {
 		})
 		let diceRes = this.commenter(wantedResult);
 		return {images: wantedResult.pics, text: message + '\n'+ diceRes.text};
+	},
+
+	wanted(wantedLevel) {
+		let wantedTier = 1;
+		if(wantedLevel == 1){
+			wantedTier = 0;
+		}
+		else if(wantedLevel > 3){
+			wantedTier = 2
+		}
+
+		let wantedData = {
+			dice: 1,
+			resist: false,
+			entangling: true
+		}
+
+		let wantedResult = this.roller(wantedData);
+
+		let rollTier = 1;
+		if(wantedResult.result < 4){
+			rollTier = 0;
+		}
+		else if(wantedResult.result > 5){
+			rollTier = 2;
+		}
+
+		let consequence = obj['wantedTable'][wantedTier][rollTier];
+
+		let diceRes = this.commenter(wantedResult);
+		return {images: wantedResult.pics, text: consequence + '\n'+ diceRes.text};
 	}
 };
 
@@ -289,8 +323,9 @@ const mergeDice = async(dicePics, msg, text) => {
 bot.on("message", (msg) => {
 	commandArray = msg.content.split(' ');
 	command = commandArray[0].toLowerCase();
+	const symbol = testing? "@" : "$";
 
-	if(commandArray[0] === "$entangle"){
+	if(commandArray[0] === symbol + "entangle"){
 		if(commandArray.length !== 3 || isNaN(commandArray[1]) || isNaN(commandArray[2])){
 			msg.reply(embedReply('Format for entanglement roll is \` $entangle <heat> <wanted level> \`'))
 		}
@@ -320,7 +355,36 @@ bot.on("message", (msg) => {
 			}
 		}
 	}
-	else if (msg.content[0] === "$") {
+	else if(commandArray[0] === symbol + "wanted"){
+		if(isNaN(commandArray[1])){
+			msg.reply(embedReply('Format for wanted roll is \` $wanted <wanted level> \`'))
+		}
+		else{
+			let wantedLevel = commandArray[1];
+	
+			if(wantedLevel > 4){
+				msg.reply(embedReply(`Invalid wanted level!
+				Format for entanglement roll is \` $wanted <wanted level> \``))
+			}
+			else{
+				let reply = roll.wanted(wantedLevel);
+				if(reply.images){
+					mergeDice(reply.images, msg, reply.text);
+				}
+				else{
+					msg.reply(embedReply(reply.text)).catch((error) => {
+						console.log(error);
+						msg.reply(
+							"The bot had an error, which has been logged.\n*" +
+								error.message +
+								"*"
+						);
+					});
+				}
+			}
+		}
+	}
+	else if (msg.content[0] === symbol) {
 		let content = msg.content.slice(1).toLowerCase().replace(/\s+/g, "");
 
 		if (obj[content]) {
@@ -353,10 +417,10 @@ bot.on("message", (msg) => {
 			)
 		}
 	}
-	if(msg.content[0] + msg.content[1] === "k$"){
-		query = msg.content.slice(2).toLowerCase();
-		searchKanka(query, msg);
-	}
+	// if(msg.content[0] + msg.content[1] === "k" + symbol){
+	// 	query = msg.content.slice(2).toLowerCase();
+	// 	searchKanka(query, msg);
+	// }
 });
 
 bot.login(token);

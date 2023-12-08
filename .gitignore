@@ -2,3 +2,4 @@
 node_modules/
 api_key
 kanka_key
+.DS_Store
