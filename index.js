@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const bot = new Discord.Client({intents:3276799});
 require("dotenv").config();
 
-const testing = true;
+const testing = false;
 
 var fs = require("fs");
 const token = fs.readFileSync("api_key").toString('utf-8');
