@@ -81,13 +81,7 @@ const roll = {
 		}
 
 		//Calculates number of dice to roll.
-		data.d = Number(/^\d+/.exec(content)); //Number must immediately follow !, can be many digits.
-		if (data.d > 20) {
-			data.d = 20;
-			data.comment +=
-				"\nI'm limited to rolling 20 dice at a time. I hope you don't mind!";
-		}
-		data.dice = data.d || 2; //Handles 0d rolls.
+		data.diceToRoll = Number(/^\d+/.exec(content)); //Number must immediately follow !, can be many digits.
 
 		//Resist checker
 		if (data.statement.toLowerCase().includes("r")) {
@@ -106,11 +100,22 @@ const roll = {
 		data.index = 0;
 		data.result = 0;
 
+		if (data.diceToRoll > 20) {
+			data.diceToRoll = 20;
+			data.comment +=
+				"\nI'm limited to rolling 20 dice at a time. I hope you don't mind!";
+		}
+		data.dice = data.diceToRoll || 2; //Handles 0d rolls.
+
+		console.log(data.dice);
 		for (i = 1; i <= data.dice; i++) {
+			//THIS IS THE ROLL
 			data.rolls.push(Math.floor(Math.random() * 6 + 1));
 			data.pics.push('');
 		}
-		if (data.d === 0) {
+
+		console.log(data.diceToRoll);
+		if (data.diceToRoll === 0) {
 			return this.zeroHandle(data); //Roll 2d, take lowest
 		} else {
 			return this.manyHandle(data); //Take highest of data.rolls
@@ -166,7 +171,7 @@ const roll = {
 		let replyString = `[**${data.result}**] `;
 		const dicePicURL = repoURL + '/embeds/dice_pics/'
 
-		if (data.d !== 1) {
+		if (data.diceToRoll !== 1) {
 			replyString += `from ${data.rolls.join(", ")}`; //Doesn't bother with displaying roll array if 1d.
 		}
 
@@ -219,8 +224,9 @@ const roll = {
 			heatTier = 2
 		}
 
+
 		let entanglementData = {
-			dice: wantedLevel,
+			diceToRoll: Number(wantedLevel),
 			resist: false,
 			entangling: true
 		}
@@ -228,6 +234,8 @@ const roll = {
 		let wantedResult = this.roller(entanglementData);
 
 		let options = obj['entanglementTable'][heatTier][wantedResult.result - 1];
+
+		console.log(wantedResult);
 
 		let message = 'Choose 1: \n\n'
 		options.forEach((value, index) => {
